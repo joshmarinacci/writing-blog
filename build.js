@@ -2,24 +2,9 @@ import {memoize, mkdir, runTask, log} from "./utils.js"
 import fs, {promises as FSP, constants as FSC} from "fs"
 import {basename, join as pathJoin, dirname as pathDirname, parse as pathParse, extname as pathExtname} from "path"
 import unified from "unified"
-import vfile from 'vfile'
 import parseHtml from 'rehype-parse'
 import stringifyHtml from 'rehype-stringify'
-import treeFind from 'unist-util-find'
 import visit from 'unist-util-visit-parents'
-import u from 'unist-builder'
-/*Scan blog list, date should be grabbed from metadata JSON file or in the HTML document
-* use blog file timestamp to determine date of last change
-* the name of the file doesn’t matter. Title and slug will come from metadata or HTML document
-* parse templates and record their timestamps
-* scan list of blogs, record timestamps
-* calculate if anything needs to be rebuilt
-* memoize the various build commands
-* build index pages (or do this dynamically?)
-* build blog pages, track images and plugins
-* build css if needed
-    * rebuild any needed images
-*/
 
 const OUTPUT_DIR = "output"
 const BLOG_SOURCE = "blogs"
