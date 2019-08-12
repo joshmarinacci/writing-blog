@@ -2,10 +2,13 @@
   "name": "writing-blog",
   "version": "1.0.0",
   "description": "",
-  "main": "build.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node --experimental-modules build.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "unified": "^8.3.2"
+  }
 }
