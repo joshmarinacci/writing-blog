@@ -7,7 +7,9 @@ import stringifyHtml from 'rehype-stringify'
 import visit from 'unist-util-visit-parents'
 
 const OUTPUT_DIR = "output"
-const BLOG_SOURCE = "blogs"
+const BLOG_SOURCE = "posts"
+const RESOURCES = 'resources'
+const STYLESHEET = pathJoin(RESOURCES,'main.css')
 
 async function calculateOutputPath(fullfile) {
     // console.log("full file is",fullfile, basename(fullfile))
@@ -112,7 +114,7 @@ async function processBlogPost(fullfile) {
     // console.log("processing",fullfile)
     const output = await calculateOutputPath(fullfile)
     // console.log("output file",output.outpath)
-    const okay = await newer(output,[fullfile,pathJoin(BLOG_SOURCE,'main.css')])
+    const okay = await newer(output,[fullfile,STYLESHEET])
     if(okay) {
         console.log(`skipping:   ${fullfile}`)
         return output
@@ -149,6 +151,6 @@ async function buildPosts() {
         await processBlogPost(file)
     }
 
-    await copyToDirIfNewer(pathJoin(BLOG_SOURCE,'main.css'),OUTPUT_DIR)
+    await copyToDirIfNewer(STYLESHEET,OUTPUT_DIR)
 }
 buildPosts().then(()=>console.log("all done"))
