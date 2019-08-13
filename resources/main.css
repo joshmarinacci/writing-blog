@@ -1,3 +1,88 @@
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:100,300,600&display=swap');
+/*
+https://fonts.google.com/featured/Plex?selection.family=IBM+Plex+Sans:400,600
+
+also has serif and monospace.
+ */
 body {
-    background-color: red;
+    background-color: #fafaf0;
+    font-size: 14pt;
+    line-height: 1.75rem;
+}
+
+h1,h2,h3 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 100;
+}
+h1 {
+    font-size: 3rem;
+}
+h2 {
+    font-size: 2.0rem;
+}
+h3 {
+    font-size: 1.5rem;
+}
+
+h1.title {
+    line-height: 100%;
+    margin-bottom: 0;
+}
+h2.subtitle {
+    font-size: 1rem;
+    margin-top: 0;
+}
+
+p {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+}
+b {
+   font-weight: 600;
+}
+
+
+div.standalone {
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+    justify-content: space-around;
+}
+div.standalone img {
+    /*border: 0.5px solid black;*/
+}
+
+
+
+body {
+    display: grid;
+    grid-template-columns: 1fr [left] 2fr [center] 1fr [right];
+    grid-column-gap: 30px;
+}
+header, footer {
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+aside {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    font-weight: 100;
+}
+aside p {
+    font-weight: 600;
+}
+aside h3 {
+    background-color: #ffa280;
+    padding: 0.25em 0.5em;
+}
+
+article {
+    grid-row-start: 2;
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+
+footer {
+    text-align: center;
 }
