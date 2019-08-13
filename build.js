@@ -27,6 +27,9 @@ async function calculateOutputPath(fullfile) {
                 meta[node.properties.name] = node.properties.content
             }
         }
+        if(node.tagName === 'title') {
+            meta.title = node.children[0].value
+        }
     })
     if(!meta.created) throw new Error(`document ${fullfile} is missing an created date`)
     const outpath = pathJoin(OUTPUT_DIR,meta.created,meta.slug+'.html')
@@ -53,6 +56,13 @@ async function newer(target, sources) {
     return true
 }
 
+async function parseIndex(fullfile) {
+    const content = await FSP.readFile(fullfile)
+    const tree = await unified()
+        .use(parseHtml, {emitParseErrors: true})
+        .parse(content)
+    return tree
+}
 async function parseBlogPost(fullfile) {
     console.log("parsing blog post",fullfile)
     const content = await FSP.readFile(fullfile)
@@ -143,14 +153,70 @@ async function copyToDirIfNewer(source, OUTPUT_DIR) {
     // console.log("comparing",outStats,sourceStats)
 }
 
+
+function gtext(str) {
+    return {
+        type:'text',
+        value:str
+    }
+}
+function link(url,...rest) {
+    return {
+        type:'element',
+        tagName:'a',
+        properties:{href:url},
+        children:rest
+    }
+}
+
+function element(name,...rest) {
+    return {
+        type:'element',
+        tagName:name,
+        children:rest
+    }
+}
+const article = (...rest) => element('article', ...rest)
+const div = (...rest) => element('div', ...rest)
+const h3  = (...rest) => element('h3',  ...rest)
+const p  = (...rest) => element('p',  ...rest)
+
+
+async function generateIndex(posts) {
+    // console.log("got",posts)
+    const info = {
+        inpath:'resources/index.html',
+        outpath:pathJoin(OUTPUT_DIR,'index.html'),
+    }
+    const tree = await parseIndex(info.inpath)
+    visit(tree,(node)=>{
+        if(node.tagName === 'body') {
+            // console.log("body",node.children)
+            posts.forEach(post => {
+                node.children.push(
+                    article(
+                        h3(
+                            link(post.outpath,gtext(post.meta.title))
+                        ),
+                        p(gtext('some cool text to read'))
+                        ))
+            })
+        }
+    })
+    await writeTree(tree,info)
+    console.log('writing index to',info.outpath)
+}
+
 async function buildPosts() {
     let posts = await FSP.readdir(BLOG_SOURCE)
     posts = posts.filter(f => pathExtname(f) === '.html')
     posts = posts.map(f => pathJoin(BLOG_SOURCE,f))
-    for (const file of posts) {
-        await processBlogPost(file)
-    }
+    const outs = await (Promise.all(posts.map(file => processBlogPost(file))))
+    // for (const file of posts) {
+    //     await processBlogPost(file)
+    // }
 
     await copyToDirIfNewer(STYLESHEET,OUTPUT_DIR)
+    await generateIndex(outs)
 }
 buildPosts().then(()=>console.log("all done"))
