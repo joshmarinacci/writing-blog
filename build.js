@@ -10,6 +10,7 @@ const OUTPUT_DIR = "output"
 const BLOG_SOURCE = "posts"
 const RESOURCES = 'resources'
 const STYLESHEET = pathJoin(RESOURCES,'main.css')
+const POST_TEMPLATE = pathJoin(RESOURCES,'post.html')
 
 async function calculateOutputPath(fullfile) {
     // console.log("full file is",fullfile, basename(fullfile))
@@ -33,9 +34,11 @@ async function calculateOutputPath(fullfile) {
     })
     if(!meta.created) throw new Error(`document ${fullfile} is missing an created date`)
     const outpath = pathJoin(OUTPUT_DIR,meta.created,meta.slug+'.html')
+    const relpath = pathJoin(meta.created,meta.slug+'.html')
     return {
         inpath:fullfile,
         outpath:outpath,
+        relpath:relpath,
         stats:await FSP.stat(outpath).catch(()=>false),
         meta:meta,
     }
@@ -71,9 +74,20 @@ async function parseBlogPost(fullfile) {
         .parse(content)
     return tree
 }
+async function parsePostTemplate(filepath) {
+    const content = await FSP.readFile(filepath)
+    return await unified()
+        .use(parseHtml, {emitParseErrors: true})
+        .parse(content)
+}
+
 
 async function applyTemplate(tree, template) {
+    let post_body = null
     visit(tree,(node)=>{
+        if(node.tagName === 'body') {
+            post_body = node
+        }
         //replace codeblock with pre code
         if(node.tagName === 'codeblock') {
             node.tagName = 'pre'
@@ -96,6 +110,12 @@ async function applyTemplate(tree, template) {
                 }
             )
         }
+    })
+
+    visit(template,node => {
+        if(node.tagName !== 'body') return
+        node.children.push(...post_body.children)
+        console.log("copying into the template",...post_body.children)
     })
 
 }
@@ -124,16 +144,17 @@ async function processBlogPost(fullfile) {
     // console.log("processing",fullfile)
     const output = await calculateOutputPath(fullfile)
     // console.log("output file",output.outpath)
-    const okay = await newer(output,[fullfile,STYLESHEET])
+    output.template = await parsePostTemplate(POST_TEMPLATE)
+    output.tree = await parseBlogPost(fullfile)
+    const okay = await newer(output,[fullfile,STYLESHEET,POST_TEMPLATE])
     if(okay) {
         console.log(`skipping:   ${fullfile}`)
         return output
     }
     console.log(`processing: ${output.outpath}`)
-    const tree = await parseBlogPost(fullfile)
     //inserts common CSS files w/ the correct relative path
-    await applyTemplate(tree)
-    await writeTree(tree,output)
+    await applyTemplate(output.tree,output.template)
+    await writeTree(output.template,output)
     return output
 }
 
@@ -182,6 +203,16 @@ const h3  = (...rest) => element('h3',  ...rest)
 const p  = (...rest) => element('p',  ...rest)
 
 
+function calculateSummaryNodes(tree) {
+    let summary = []
+    visit(tree,node => {
+        if(node.tagName !== 'body') return
+        console.log("found a body",node)
+        summary = node.children.slice(2)
+    })
+    return summary
+}
+
 async function generateIndex(posts) {
     // console.log("got",posts)
     const info = {
@@ -191,14 +222,14 @@ async function generateIndex(posts) {
     const tree = await parseIndex(info.inpath)
     visit(tree,(node)=>{
         if(node.tagName === 'body') {
-            // console.log("body",node.children)
             posts.forEach(post => {
+                const summary = calculateSummaryNodes(post.tree)
                 node.children.push(
                     article(
                         h3(
-                            link(post.outpath,gtext(post.meta.title))
+                            link(post.relpath,gtext(post.meta.title))
                         ),
-                        p(gtext('some cool text to read'))
+                        ...summary,
                         ))
             })
         }
