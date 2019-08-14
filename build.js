@@ -14,12 +14,7 @@ const POST_TEMPLATE = pathJoin(RESOURCES,'post.html')
 const CLEAN = {dirty:true}
 
 async function calculateOutputPath(fullfile) {
-    // console.log("full file is",fullfile, basename(fullfile))
-    const content = await FSP.readFile(fullfile)
-    const tree = await unified()
-        .use(parseHtml, {emitParseErrors: true})
-        .parse(content)
-
+    const tree = await parseHTMLFile(fullfile)
     const meta = {}
     visit(tree,(node)=>{
         if(node.tagName === 'meta') {
@@ -136,8 +131,8 @@ async function processBlogPost(fullfile) {
     // console.log("output file",output.outpath)
     output.template = await parseHTMLFile(POST_TEMPLATE)
     output.tree = await parseHTMLFile(fullfile)
-    const okay = await newer(output,[fullfile,STYLESHEET,POST_TEMPLATE,CLEAN])
-    if(okay) {
+    const newest = await newer(output,[fullfile,STYLESHEET,POST_TEMPLATE,CLEAN])
+    if(newest) {
         console.log(`skipping:   ${fullfile}`)
         return output
     }
@@ -165,13 +160,13 @@ async function copyToDirIfNewer(source, OUTPUT_DIR) {
 }
 
 
-function gtext(str) {
+function Text(str) {
     return {
         type:'text',
         value:str
     }
 }
-function link(url,...rest) {
+function Link(url,...rest) {
     return {
         type:'element',
         tagName:'a',
@@ -179,18 +174,18 @@ function link(url,...rest) {
         children:rest
     }
 }
-
-function element(name,...rest) {
+function Element(name,...rest) {
     return {
         type:'element',
         tagName:name,
         children:rest
     }
 }
-const article = (...rest) => element('article', ...rest)
-const div = (...rest) => element('div', ...rest)
-const h3  = (...rest) => element('h3',  ...rest)
-const p  = (...rest) => element('p',  ...rest)
+const Article = (...rest) => Element('article', ...rest)
+const Div = (...rest) => Element('div', ...rest)
+const H3  = (...rest) => Element('h3',  ...rest)
+const P  = (...rest) => Element('p',  ...rest)
+const I  = (...rest) => Element('i',  ...rest)
 
 
 function calculateSummaryNodes(tree) {
@@ -209,17 +204,23 @@ async function generateIndex(posts) {
         inpath:'resources/index.html',
         outpath:pathJoin(OUTPUT_DIR,'index.html'),
     }
+    posts.sort((a,b)=>{
+        if(a.meta.created > b.meta.created) return -1
+        if(a.meta.created < b.meta.created) return +1
+        return 0
+    })
     const tree = await parseHTMLFile(info.inpath)
     visit(tree,(node)=>{
         if(node.tagName === 'body') {
             posts.forEach(post => {
                 const summary = calculateSummaryNodes(post.tree)
                 node.children.push(
-                    article(
-                        h3(
-                            link(post.relpath,gtext(post.meta.title))
+                    Article(
+                        H3(
+                            Link(post.relpath,Text(post.meta.title))
                         ),
                         ...summary,
+                        I(Text(`written ${post.meta.created}`))
                         ))
             })
         }
