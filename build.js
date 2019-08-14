@@ -11,6 +11,7 @@ const BLOG_SOURCE = "posts"
 const RESOURCES = 'resources'
 const STYLESHEET = pathJoin(RESOURCES,'main.css')
 const POST_TEMPLATE = pathJoin(RESOURCES,'post.html')
+const CLEAN = {dirty:true}
 
 async function calculateOutputPath(fullfile) {
     // console.log("full file is",fullfile, basename(fullfile))
@@ -49,7 +50,12 @@ async function newer(target, sources) {
     if(!target.stats) return false
     // console.log("target is",target.stats.mtime)
     for (let i = 0; i < sources.length; i++) {
-        const stat = await FSP.stat(sources[i])
+        const source = sources[i]
+        if(typeof source === 'object') {
+            if(source.dirty) return false
+            continue
+        }
+        const stat = await FSP.stat(source)
         // console.log('dep stats is', stat.mtime)
         if(stat.mtime > target.stats.mtime) {
             // console.log("target is older")
@@ -59,28 +65,12 @@ async function newer(target, sources) {
     return true
 }
 
-async function parseIndex(fullfile) {
+async function parseHTMLFile(fullfile) {
     const content = await FSP.readFile(fullfile)
-    const tree = await unified()
-        .use(parseHtml, {emitParseErrors: true})
-        .parse(content)
-    return tree
-}
-async function parseBlogPost(fullfile) {
-    console.log("parsing blog post",fullfile)
-    const content = await FSP.readFile(fullfile)
-    const tree = await unified()
-        .use(parseHtml, {emitParseErrors: true})
-        .parse(content)
-    return tree
-}
-async function parsePostTemplate(filepath) {
-    const content = await FSP.readFile(filepath)
     return await unified()
         .use(parseHtml, {emitParseErrors: true})
         .parse(content)
 }
-
 
 async function applyTemplate(tree, template) {
     let post_body = null
@@ -115,7 +105,7 @@ async function applyTemplate(tree, template) {
     visit(template,node => {
         if(node.tagName !== 'body') return
         node.children.push(...post_body.children)
-        console.log("copying into the template",...post_body.children)
+        // console.log("copying into the template",...post_body.children)
     })
 
 }
@@ -144,9 +134,9 @@ async function processBlogPost(fullfile) {
     // console.log("processing",fullfile)
     const output = await calculateOutputPath(fullfile)
     // console.log("output file",output.outpath)
-    output.template = await parsePostTemplate(POST_TEMPLATE)
-    output.tree = await parseBlogPost(fullfile)
-    const okay = await newer(output,[fullfile,STYLESHEET,POST_TEMPLATE])
+    output.template = await parseHTMLFile(POST_TEMPLATE)
+    output.tree = await parseHTMLFile(fullfile)
+    const okay = await newer(output,[fullfile,STYLESHEET,POST_TEMPLATE,CLEAN])
     if(okay) {
         console.log(`skipping:   ${fullfile}`)
         return output
@@ -207,7 +197,7 @@ function calculateSummaryNodes(tree) {
     let summary = []
     visit(tree,node => {
         if(node.tagName !== 'body') return
-        console.log("found a body",node)
+        // console.log("found a body",node)
         summary = node.children.slice(2)
     })
     return summary
@@ -219,7 +209,7 @@ async function generateIndex(posts) {
         inpath:'resources/index.html',
         outpath:pathJoin(OUTPUT_DIR,'index.html'),
     }
-    const tree = await parseIndex(info.inpath)
+    const tree = await parseHTMLFile(info.inpath)
     visit(tree,(node)=>{
         if(node.tagName === 'body') {
             posts.forEach(post => {
