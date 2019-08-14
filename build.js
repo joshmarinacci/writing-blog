@@ -98,7 +98,7 @@ async function applyTemplate(tree, template) {
     })
 
     visit(template,node => {
-        if(node.tagName !== 'body') return
+        if(node.tagName !== 'article') return
         node.children.push(...post_body.children)
         // console.log("copying into the template",...post_body.children)
     })
