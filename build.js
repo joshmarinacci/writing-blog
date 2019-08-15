@@ -11,6 +11,8 @@ const BLOG_SOURCE = "posts"
 const RESOURCES = 'resources'
 const STYLESHEET = pathJoin(RESOURCES,'main.css')
 const POST_TEMPLATE = pathJoin(RESOURCES,'post.html')
+const HEADER_TEMPLATE = pathJoin(RESOURCES,'header.html')
+const FOOTER_TEMPLATE = pathJoin(RESOURCES,'footer.html')
 const CLEAN = {dirty:true}
 
 async function calculateOutputPath(fullfile) {
@@ -67,7 +69,17 @@ async function parseHTMLFile(fullfile) {
         .parse(content)
 }
 
+async function parseHTMLFragment(fullfile) {
+    const content = await FSP.readFile(fullfile)
+    return await unified()
+        .use(parseHtml, {emitParseErrors: true, fragment:true})
+        .parse(content)
+}
+
 async function applyTemplate(tree, template) {
+    let header = await parseHTMLFragment(HEADER_TEMPLATE)
+    let footer = await parseHTMLFragment(FOOTER_TEMPLATE)
+
     let post_body = null
     visit(tree,(node)=>{
         if(node.tagName === 'body') {
@@ -98,11 +110,20 @@ async function applyTemplate(tree, template) {
     })
 
     visit(template,node => {
-        if(node.tagName !== 'article') return
-        node.children.push(...post_body.children)
-        // console.log("copying into the template",...post_body.children)
+        if(node.tagName === 'article') {
+            node.children.push(...post_body.children)
+        }
     })
 
+    replaceElementWithFragment(template,'header',header)
+    replaceElementWithFragment(template,'footer',footer)
+}
+
+
+function replaceElementWithFragment(tree,name,fragment) {
+    visit(tree,node => {
+        if(node.tagName === name) node.children = fragment.children[0].children
+    })
 }
 
 async function mkdirsFor(outpath) {
@@ -209,9 +230,9 @@ async function generateIndex(posts) {
         if(a.meta.created < b.meta.created) return +1
         return 0
     })
-    const tree = await parseHTMLFile(info.inpath)
-    visit(tree,(node)=>{
-        if(node.tagName === 'body') {
+    const indexTemplate = await parseHTMLFile(info.inpath)
+    visit(indexTemplate,(node)=>{
+        if(node.tagName === 'main') {
             posts.forEach(post => {
                 const summary = calculateSummaryNodes(post.tree)
                 node.children.push(
@@ -226,7 +247,11 @@ async function generateIndex(posts) {
             })
         }
     })
-    await writeTree(tree,info)
+    let header = await parseHTMLFragment(HEADER_TEMPLATE)
+    let footer = await parseHTMLFragment(FOOTER_TEMPLATE)
+    replaceElementWithFragment(indexTemplate,'header',header)
+    replaceElementWithFragment(indexTemplate,'footer',footer)
+    await writeTree(indexTemplate,info)
     console.log('writing index to',info.outpath)
 }
 
