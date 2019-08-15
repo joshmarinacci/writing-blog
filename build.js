@@ -193,7 +193,7 @@ function calculateSummaryNodes(tree) {
     visit(tree,node => {
         if(node.tagName !== 'body') return
         // console.log("found a body",node)
-        summary = node.children.slice(2)
+        summary = node.children.slice(0,6)
     })
     return summary
 }
@@ -220,7 +220,8 @@ async function generateIndex(posts) {
                             Link(post.relpath,Text(post.meta.title))
                         ),
                         ...summary,
-                        I(Text(`written ${post.meta.created}`))
+                        Link(post.relpath,Text('read more...')),
+                        I(Text(`written ${post.meta.created}`)),
                         ))
             })
         }
