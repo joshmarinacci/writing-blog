@@ -77,7 +77,8 @@ async function parseHTMLFragment(fullfile) {
         .parse(content)
 }
 
-async function applyTemplate(tree, template) {
+async function applyTemplate(tree, template, post) {
+    console.log("doing post",post)
     let header = await parseHTMLFragment(HEADER_TEMPLATE)
     let footer = await parseHTMLFragment(FOOTER_TEMPLATE)
 
@@ -112,6 +113,7 @@ async function applyTemplate(tree, template) {
 
     visit(template,node => {
         if(node.tagName === 'main') {
+            node.children.push(H3(Text(post.meta.title)))
             node.children.push(...post_body.children)
         }
     })
@@ -160,7 +162,7 @@ async function processBlogPost(fullfile) {
     }
     console.log(`processing: ${output.outpath}`)
     //inserts common CSS files w/ the correct relative path
-    await applyTemplate(output.tree,output.template)
+    await applyTemplate(output.tree,output.template, output)
     await writeTree(output.template,output)
     return output
 }
