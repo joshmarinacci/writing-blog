@@ -111,7 +111,7 @@ async function applyTemplate(tree, template) {
     })
 
     visit(template,node => {
-        if(node.tagName === 'article') {
+        if(node.tagName === 'main') {
             node.children.push(...post_body.children)
         }
     })
