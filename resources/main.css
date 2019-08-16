@@ -1,88 +1,94 @@
-@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:100,300,600&display=swap');
-/*
-https://fonts.google.com/featured/Plex?selection.family=IBM+Plex+Sans:400,600
+@import url('https://fonts.googleapis.com/css?family=Exo+2:400,600&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Merriweather:400,400i,700&display=swap');
 
-also has serif and monospace.
- */
+/* fonts */
 body {
-    background-color: #fafaf0;
-    font-size: 14pt;
-    line-height: 1.75rem;
+    background-color: white;
+    color: black;
+    font-family: 'Merriweather', serif;
+    --red : rgb(255,2,2);
 }
-
-h1,h2,h3 {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-weight: 100;
-}
-h1 {
-    font-size: 3rem;
-}
-h2 {
-    font-size: 2.0rem;
-}
-h3 {
-    font-size: 1.5rem;
-}
-
-h1.title {
-    line-height: 100%;
-    margin-bottom: 0;
-}
-h2.subtitle {
-    font-size: 1rem;
-    margin-top: 0;
-}
-
-p {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-weight: 300;
-}
-b {
-   font-weight: 600;
+h1, h2, h3, h4 {
+    font-family: 'Exo 2', sans-serif;
 }
 
 
-div.standalone {
-    display: flex;
-    flex-direction: row;
-    margin: auto;
-    justify-content: space-around;
-}
-div.standalone img {
-    /*border: 0.5px solid black;*/
-}
-
-
+/* layout */
 
 body {
     display: grid;
-    grid-template-columns: 1fr [left] 2fr [center] 1fr [right];
-    grid-column-gap: 30px;
+    grid-template-columns: [left] 1fr [center] minmax(15rem,30rem) [right] 1fr [end];
+    grid-template-rows: [header] 8rem [content] 1fr [footer]10rem;
+    grid-gap: 3rem;
+    margin: 2rem;
 }
-header, footer {
-    grid-column-start: 2;
-    grid-column-end: 3;
+
+body > * {
+    /*border: 1px solid red;*/
+}
+header {
+    grid-column: center/end;
+    grid-row: header;
+}
+footer {
+    grid-column: left/end;
+    grid-row: footer;
 }
 aside {
-    grid-column-start: 3;
-    grid-column-end: 4;
-    grid-row-start: 2;
-    font-weight: 100;
+    grid-column: right;
+    grid-row: content;
 }
-aside p {
-    font-weight: 600;
-}
-aside h3 {
-    background-color: #ffa280;
-    padding: 0.25em 0.5em;
+main {
+    grid-column: center;
+    grid-row: content;
 }
 
-main, article {
-    /*grid-row-start: 2;*/
-    grid-column-start: 2;
-    grid-column-end: 3;
+#logo {
+    grid-column: left;
+    padding: 1rem;
+    justify-self: end;
+    height: 7rem;
+}
+/* ==== styling ==== */
+
+
+h1.title {
+    font-size: 5.0rem;
+    margin:0;
+    padding:0;
+}
+h2.subtitle {
+    font-size: 2.0rem;
+    margin:0;
+    padding:0;
+}
+h1, h2 {
+    color: var(--red);
+}
+h3,h4 {
+    color: black;
+}
+h3 {
+    background-color: rgb(255,220,0);
+    padding: 0.5rem 1rem;
+    margin: 0 -1rem 0 -1rem;
 }
 
-footer {
-    text-align: center;
+h4 {
+    font-style: italic;
+    margin: 0;
 }
+
+article {
+    margin-bottom: 3rem;
+    line-height: 175%;
+}
+
+a {
+    color: var(--red);
+}
+
+h3 a {
+    color: inherit;
+}
+
