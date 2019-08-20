@@ -8,6 +8,7 @@ body {
     font-family: 'Merriweather', serif;
     --red : rgb(255,2,2);
     --green: rgb(2,255,2);
+    --yellow: rgb(255,220,0);
 }
 h1, h2, h3, h4 {
     font-family: 'Exo 2', sans-serif;
@@ -58,20 +59,17 @@ h1.title {
     font-size: 5.0rem;
     margin:0;
     padding:0;
+    color: var(--red);
 }
 h2.subtitle {
     font-size: 2.0rem;
     margin:0;
     padding:0;
-}
-h1, h2 {
     color: var(--red);
 }
-h3,h4 {
-    color: black;
-}
-h3 {
-    background-color: rgb(255,220,0);
+
+/*h3 {
+    background-color: var(--yellow);
     padding: 0.5rem 1rem;
     margin: 0 -1rem 0 -1rem;
 }
@@ -80,10 +78,27 @@ h4 {
     font-style: italic;
     margin: 0;
 }
+*/
 
-article {
+main {
     margin-bottom: 3rem;
     line-height: 175%;
+}
+
+main h1 {
+    background-color: var(--yellow);
+    padding: 0.5rem 1rem;
+    margin: 0 -1rem 0 -1rem;
+    font-size: 1.5rem;
+}
+main h1 a {
+    text-decoration: none;
+    color: black;
+}
+
+main h3 {
+    background-color: transparent;
+    margin-top: 2rem;
 }
 
 a {
@@ -95,3 +110,12 @@ h3 a {
     text-decoration: none;
 }
 
+blockquote {
+    border-left: 1px solid var(--red);
+    padding-left: 0.5rem;
+}
+
+
+header h1 a, header h2 a{
+    text-decoration: none;
+}

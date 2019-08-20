@@ -113,7 +113,7 @@ async function applyTemplate(tree, template, post) {
 
     visit(template,node => {
         if(node.tagName === 'main') {
-            node.children.push(H3(Text(post.meta.title)))
+            node.children.push(H1(Text(post.meta.title)))
             node.children.push(...post_body.children)
         }
     })
@@ -207,6 +207,8 @@ function Element(name,...rest) {
 }
 const Article = (...rest) => Element('article', ...rest)
 const Div = (...rest) => Element('div', ...rest)
+const H1  = (...rest) => Element('h1',  ...rest)
+const H2  = (...rest) => Element('h2',  ...rest)
 const H3  = (...rest) => Element('h3',  ...rest)
 const P  = (...rest) => Element('p',  ...rest)
 const I  = (...rest) => Element('i',  ...rest)
@@ -240,7 +242,7 @@ async function generateIndex(posts) {
                 const summary = calculateSummaryNodes(post.tree)
                 node.children.push(
                     Article(
-                        H3(
+                        H1(
                             Link(post.relpath,Text(post.meta.title))
                         ),
                         ...summary,
@@ -263,10 +265,6 @@ async function buildPosts() {
     posts = posts.filter(f => pathExtname(f) === '.html')
     posts = posts.map(f => pathJoin(BLOG_SOURCE,f))
     const outs = await (Promise.all(posts.map(file => processBlogPost(file))))
-    // for (const file of posts) {
-    //     await processBlogPost(file)
-    // }
-
     await copyToDirIfNewer(STYLESHEET,OUTPUT_DIR)
     await copyToDirIfNewer(LOGO,OUTPUT_DIR)
     await generateIndex(outs)
