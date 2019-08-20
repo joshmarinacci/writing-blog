@@ -37,8 +37,12 @@ footer {
     grid-column: left/end;
     grid-row: footer;
 }
-aside {
+aside.right {
     grid-column: right;
+    grid-row: content;
+}
+aside.left {
+    grid-column: left;
     grid-row: content;
 }
 main {
@@ -68,17 +72,11 @@ h2.subtitle {
     color: var(--red);
 }
 
-/*h3 {
+aside h3 {
     background-color: var(--yellow);
     padding: 0.5rem 1rem;
     margin: 0 -1rem 0 -1rem;
 }
-
-h4 {
-    font-style: italic;
-    margin: 0;
-}
-*/
 
 main {
     margin-bottom: 3rem;
@@ -90,6 +88,13 @@ main h1 {
     padding: 0.5rem 1rem;
     margin: 0 -1rem 0 -1rem;
     font-size: 1.5rem;
+}
+
+main article {
+    margin-top: 2rem;
+}
+main article:first-child {
+    margin-top: 0;
 }
 main h1 a {
     text-decoration: none;
@@ -119,3 +124,5 @@ blockquote {
 header h1 a, header h2 a{
     text-decoration: none;
 }
+
+
