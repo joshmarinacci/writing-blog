@@ -21,7 +21,8 @@ body {
     grid-template-columns: [left] 1fr [center] minmax(15rem,30rem) [right] 1fr [end];
     grid-template-rows: [header] 8rem [content] 1fr [footer]10rem;
     grid-gap: 3rem;
-    margin: 2rem;
+    margin: auto;
+    max-width: 60rem;
 }
 
 body > * {
