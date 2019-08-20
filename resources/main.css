@@ -7,6 +7,7 @@ body {
     color: black;
     font-family: 'Merriweather', serif;
     --red : rgb(255,2,2);
+    --green: rgb(2,255,2);
 }
 h1, h2, h3, h4 {
     font-family: 'Exo 2', sans-serif;
@@ -64,6 +65,7 @@ h2.subtitle {
 }
 h1, h2 {
     color: var(--red);
+    color: var(--green);
 }
 h3,h4 {
     color: black;
