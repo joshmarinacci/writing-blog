@@ -32,8 +32,8 @@ async function calculateOutputPath(fullfile) {
         }
     })
     if(!meta.created) throw new Error(`document ${fullfile} is missing an created date`)
-    const outpath = pathJoin(OUTPUT_DIR,meta.created,meta.slug+'.html')
-    const relpath = pathJoin(meta.created,meta.slug+'.html')
+    const relpath = pathJoin(meta.created+'_'+meta.slug+'.html')
+    const outpath = pathJoin(OUTPUT_DIR,relpath)
     return {
         inpath:fullfile,
         outpath:outpath,
@@ -65,15 +65,15 @@ async function newer(target, sources) {
 
 async function parseHTMLFile(fullfile) {
     const content = await FSP.readFile(fullfile)
-    return await unified()
+    return unified()
         .use(parseHtml, {emitParseErrors: true})
         .parse(content)
 }
 
 async function parseHTMLFragment(fullfile) {
     const content = await FSP.readFile(fullfile)
-    return await unified()
-        .use(parseHtml, {emitParseErrors: true, fragment:true})
+    return unified()
+        .use(parseHtml, {emitParseErrors: true, fragment: true})
         .parse(content)
 }
 
