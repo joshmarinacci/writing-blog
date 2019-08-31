@@ -11,6 +11,7 @@ const BLOG_SOURCE = "posts"
 const RESOURCES = 'resources'
 const STYLESHEET = pathJoin(RESOURCES,'main.css')
 const LOGO = pathJoin(RESOURCES,'sign.small.png')
+const BGIMG = pathJoin(RESOURCES,'funky-lines.png')
 const POST_TEMPLATE = pathJoin(RESOURCES,'post.html')
 const HEADER_TEMPLATE = pathJoin(RESOURCES,'header.html')
 const FOOTER_TEMPLATE = pathJoin(RESOURCES,'footer.html')
@@ -267,6 +268,7 @@ async function buildPosts() {
     const outs = await (Promise.all(posts.map(file => processBlogPost(file))))
     await copyToDirIfNewer(STYLESHEET,OUTPUT_DIR)
     await copyToDirIfNewer(LOGO,OUTPUT_DIR)
+    await copyToDirIfNewer(BGIMG,OUTPUT_DIR)
     await generateIndex(outs)
 }
 buildPosts().then(()=>console.log("all done"))

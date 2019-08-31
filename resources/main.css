@@ -4,6 +4,7 @@
 /* fonts */
 body {
     background-color: white;
+    background-image: url(funky-lines.png);
     color: black;
     font-family: 'Merriweather', serif;
     --red : rgb(255,2,2);
@@ -19,43 +20,82 @@ h1, h2, h3, h4 {
 
 body {
     display: grid;
-    grid-template-columns: [left] 1fr [center] minmax(15rem,30rem) [right] 1fr [end];
-    grid-template-rows: [header] 8rem [content] 1fr [footer]10rem;
-    grid-gap: 3rem;
-    margin: auto;
-    max-width: 60rem;
+    grid-gap: 1rem;
+    grid-template-areas:
+        "logo"
+        "header"
+        "asideleft"
+        "content"
+        "asideright"
+        "footer"
+    ;
+    /*margin: auto;*/
+    /*max-width: 60rem;*/
+    margin:1rem;
 }
 
 body > * {
     /*border: 1px solid red;*/
 }
-header {
-    grid-column: center/end;
-    grid-row: header;
-}
-footer {
-    grid-column: left/end;
-    grid-row: footer;
-}
-aside.right {
-    grid-column: right;
-    grid-row: content;
-}
-aside.left {
-    grid-column: left;
-    grid-row: content;
-}
-main {
-    grid-column: center;
-    grid-row: content;
-}
 
 #logo {
-    grid-column: left;
-    padding: 1rem;
-    justify-self: end;
-    height: 7rem;
+    grid-area: logo;
+    /*padding: 1rem;*/
+    justify-self: center;
+    align-self: end;
+    width: 7rem;
 }
+
+header {
+    grid-area:header;
+    padding:0 1rem;
+}
+aside {
+    align-self: start;
+}
+aside.left {
+    grid-area: asideleft;
+}
+main {
+    grid-area: content;
+}
+aside.right {
+    grid-area: asideright;
+}
+footer {
+    grid-area: footer;
+}
+
+@media only screen and (min-width: 500px)  {
+    body {
+        grid-template-columns: 10rem auto;
+        grid-template-areas:
+                "logo   header"
+                "asideleft  content"
+                "asideright asideright"
+                "footer   footer";
+    }
+    #logo {
+        justify-self: end;
+    }
+}
+
+@media only screen and (min-width: 800px)   {
+    body {
+        grid-template-columns: 10rem auto 10rem;
+        grid-template-areas:
+                "logo  header  header"
+                "asideleft content asideright"
+                "footer  footer  footer";
+        /*max-width: 600px;*/
+        max-width: 800px;
+        margin:auto;
+    }
+}
+
+
+
+
 /* ==== styling ==== */
 
 
@@ -73,20 +113,30 @@ h2.subtitle {
 }
 
 aside h3 {
-    background-color: var(--yellow);
-    padding: 0.5rem 1rem;
-    margin: 0 -1rem 0 -1rem;
+    margin: 0;
 }
 
 main {
     margin-bottom: 3rem;
     line-height: 175%;
+    background-color: white;
+    padding: 1rem;
+    padding-top:0;
+    border-radius: 1rem;
+    border: 1px solid #ddd;
+}
+
+aside {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid #ddd;
 }
 
 main h1 {
-    background-color: var(--yellow);
-    padding: 0.5rem 1rem;
-    margin: 0 -1rem 0 -1rem;
+    /*background-color: var(--yellow);*/
+    /*padding: 0rem 1rem;*/
+    /*margin: 0 -1rem 0 -1rem;*/
     font-size: 1.5rem;
 }
 
@@ -94,6 +144,9 @@ main article {
     margin-top: 2rem;
 }
 main article:first-child {
+    margin-top: 0;
+}
+main article:first-child h3 {
     margin-top: 0;
 }
 main h1 a {
