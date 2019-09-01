@@ -261,6 +261,7 @@ async function generateIndex(posts) {
     console.log('writing index to',info.outpath)
 }
 
+const VALID_RESOURCES = ['.png','.svg','.jpg']
 async function buildPosts() {
     let posts = await FSP.readdir(BLOG_SOURCE)
     posts = posts.filter(f => pathExtname(f) === '.html')
@@ -269,6 +270,14 @@ async function buildPosts() {
     await copyToDirIfNewer(STYLESHEET,OUTPUT_DIR)
     await copyToDirIfNewer(LOGO,OUTPUT_DIR)
     await copyToDirIfNewer(BGIMG,OUTPUT_DIR)
+    let images = (await FSP.readdir(BLOG_SOURCE))
+        .filter(f => VALID_RESOURCES.includes(pathExtname(f).toLowerCase()))
+        .map(f => pathJoin(BLOG_SOURCE,f))
+    console.log(images)
+    images.forEach(async (img)=> {
+        await copyToDirIfNewer(img,OUTPUT_DIR)
+    })
+
     await generateIndex(outs)
 }
 buildPosts().then(()=>console.log("all done"))
