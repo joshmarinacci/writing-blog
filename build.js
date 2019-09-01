@@ -16,6 +16,7 @@ const POST_TEMPLATE = pathJoin(RESOURCES,'post.html')
 const HEADER_TEMPLATE = pathJoin(RESOURCES,'header.html')
 const FOOTER_TEMPLATE = pathJoin(RESOURCES,'footer.html')
 const CLEAN = {dirty:true}
+const MAX_PARAGRAPHS_IN_INDEX = 4
 
 async function calculateOutputPath(fullfile) {
     const tree = await parseHTMLFile(fullfile)
@@ -214,13 +215,12 @@ const H3  = (...rest) => Element('h3',  ...rest)
 const P  = (...rest) => Element('p',  ...rest)
 const I  = (...rest) => Element('i',  ...rest)
 
-
 function calculateSummaryNodes(tree) {
     let summary = []
     visit(tree,node => {
         if(node.tagName !== 'body') return
         // console.log("found a body",node)
-        summary = node.children.slice(0,6)
+        summary = node.children.slice(0,MAX_PARAGRAPHS_IN_INDEX)
     })
     return summary
 }

@@ -149,6 +149,9 @@ main article:first-child {
 main article:first-child h3 {
     margin-top: 0;
 }
+main article img {
+    max-width: 20rem;
+}
 main h1 a {
     text-decoration: none;
     color: black;
