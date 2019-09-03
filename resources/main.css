@@ -38,6 +38,7 @@ body {
     header, footer {
         grid-column: 1;
         justify-self: center;
+        text-align: center;
     }
     aside, main {
         grid-column: 1;
@@ -72,6 +73,7 @@ body {
     header, footer {
         grid-column: 2/ span 3;
         justify-self: start;
+        text-align: left;
     }
     aside {
         grid-column: 1;
