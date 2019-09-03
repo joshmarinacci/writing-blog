@@ -28,7 +28,7 @@ body {
 /* less than 500px */
 @media only screen and (min-width: 1px) {
     html {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
     }
     #logo {
         grid-column: 1;
@@ -57,7 +57,7 @@ body {
 
 @media only screen and (min-width: 500px)  {
     html {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
     }
     body {
         grid-template-columns: 10rem auto;
