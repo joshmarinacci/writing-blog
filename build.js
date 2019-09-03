@@ -14,6 +14,7 @@ const LOGO = pathJoin(RESOURCES,'sign.small.png')
 const BGIMG = pathJoin(RESOURCES,'funky-lines.png')
 const POST_TEMPLATE = pathJoin(RESOURCES,'post.html')
 const HEADER_TEMPLATE = pathJoin(RESOURCES,'header.html')
+const ASIDE_TEMPLATE = pathJoin(RESOURCES,'aside.html')
 const FOOTER_TEMPLATE = pathJoin(RESOURCES,'footer.html')
 const CLEAN = {dirty:true}
 const MAX_PARAGRAPHS_IN_INDEX = 4
@@ -82,6 +83,7 @@ async function parseHTMLFragment(fullfile) {
 async function applyTemplate(tree, template, post) {
     console.log("doing post",post)
     let header = await parseHTMLFragment(HEADER_TEMPLATE)
+    let aside = await parseHTMLFragment(ASIDE_TEMPLATE)
     let footer = await parseHTMLFragment(FOOTER_TEMPLATE)
 
     let post_body = null
@@ -114,7 +116,7 @@ async function applyTemplate(tree, template, post) {
     })
 
     visit(template,node => {
-        if(node.tagName === 'main') {
+        if(node.tagName === 'article') {
             node.children.push(H1(Text(post.meta.title)))
             node.children.push(...post_body.children)
         }
@@ -122,6 +124,7 @@ async function applyTemplate(tree, template, post) {
 
     replaceElementWithFragment(template,'header',header)
     replaceElementWithFragment(template,'footer',footer)
+    replaceElementWithFragment(template,'aside',aside)
 }
 
 
@@ -254,8 +257,10 @@ async function generateIndex(posts) {
         }
     })
     let header = await parseHTMLFragment(HEADER_TEMPLATE)
+    let aside = await parseHTMLFragment(ASIDE_TEMPLATE)
     let footer = await parseHTMLFragment(FOOTER_TEMPLATE)
     replaceElementWithFragment(indexTemplate,'header',header)
+    replaceElementWithFragment(indexTemplate,'aside',aside)
     replaceElementWithFragment(indexTemplate,'footer',footer)
     await writeTree(indexTemplate,info)
     console.log('writing index to',info.outpath)

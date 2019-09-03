@@ -10,6 +10,7 @@ body {
     --red : rgb(255,2,2);
     --green: rgb(2,255,2);
     --yellow: rgb(255,220,0);
+    font-size: inherit;
 }
 h1, h2, h3, h4 {
     font-family: 'Exo 2', sans-serif;
@@ -17,77 +18,83 @@ h1, h2, h3, h4 {
 
 
 /* layout */
-
 body {
     display: grid;
     grid-gap: 1rem;
-    grid-template-areas:
-        "logo"
-        "header"
-        "asideleft"
-        "content"
-        "asideright"
-        "footer"
-    ;
-    /*margin: auto;*/
-    /*max-width: 60rem;*/
+    grid-template-columns: 1fr;
     margin:1rem;
 }
 
-body > * {
-    /*border: 1px solid red;*/
-}
-
-#logo {
-    grid-area: logo;
-    /*padding: 1rem;*/
-    justify-self: center;
-    align-self: end;
-    width: 7rem;
-}
-
-header {
-    grid-area:header;
-    padding:0 1rem;
-}
-aside {
-    align-self: start;
-}
-aside.left {
-    grid-area: asideleft;
-}
-main {
-    grid-area: content;
-}
-aside.right {
-    grid-area: asideright;
-}
-footer {
-    grid-area: footer;
-}
-
-@media only screen and (min-width: 500px)  {
-    body {
-        grid-template-columns: 10rem auto;
-        grid-template-areas:
-                "logo   header"
-                "asideleft  content"
-                "asideright asideright"
-                "footer   footer";
+/* less than 500px */
+@media only screen and (min-width: 1px) {
+    html {
+        font-size: 0.7rem;
     }
     #logo {
-        justify-self: end;
+        grid-column: 1;
+        justify-self: center;
+        width: 8rem;
+    }
+    header, footer {
+        grid-column: 1;
+        justify-self: center;
+    }
+    aside, main {
+        grid-column: 1;
+    }
+    aside {
+        grid-row: 4;
+    }
+    h1.title {
+        font-size: 3.0rem;
+    }
+    h2.subtitle {
+        font-size: 1.5rem;
     }
 }
 
-@media only screen and (min-width: 800px)   {
+/* greater than 500px */
+
+@media only screen and (min-width: 500px)  {
+    html {
+        font-size: 0.8rem;
+    }
     body {
-        grid-template-columns: 10rem auto 10rem;
-        grid-template-areas:
-                "logo  header  header"
-                "asideleft content asideright"
-                "footer  footer  footer";
-        /*max-width: 600px;*/
+        grid-template-columns: 10rem auto;
+    }
+    #logo {
+        grid-column: 1;
+        justify-self: end;
+        align-self: end;
+        width: 8rem;
+        padding-bottom: 0.3rem;
+    }
+    header, footer {
+        grid-column: 2/ span 3;
+        justify-self: start;
+    }
+    aside {
+        grid-column: 1;
+        grid-row: 2;
+    }
+    main {
+        grid-column: 2;
+    }
+    h1.title {
+        font-size: 5.0rem;
+    }
+    h2.subtitle {
+        font-size: 2.0rem;
+    }
+}
+
+/* greater than 800px */
+@media only screen and (min-width: 800px)   {
+    html {
+        font-size: 1.0rem;
+    }
+    body {
+        grid-template-columns: 1fr 3fr;
         max-width: 850px;
         margin:auto;
     }
@@ -95,29 +102,23 @@ footer {
 
 
 
-
 /* ==== styling ==== */
 
 
 h1.title {
-    font-size: 5.0rem;
     margin:0;
     padding:0;
     color: var(--red);
 }
 h2.subtitle {
-    font-size: 2.0rem;
     margin:0;
     padding:0;
     color: var(--red);
 }
 
-aside h3 {
-    margin: 0;
-}
 
-main {
-    margin-bottom: 3rem;
+main article {
+    margin-bottom: 1rem;
     line-height: 175%;
     background-color: white;
     padding: 1rem;
@@ -126,11 +127,12 @@ main {
     border: 1px solid #ddd;
 }
 
-aside {
+aside div.panel {
     background-color: white;
     padding: 1rem;
     border-radius: 1rem;
     border: 1px solid #ddd;
+    margin: 0 0 1rem 0;
 }
 
 main h1 {

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        body {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            grid-gap: 10px;
+            max-width: 50em;
+        }
+        header, footer {
+            grid-column: 1/ span 3;
+        }
+        section.sidebar {
+            grid-column: 1;
+        }
+        main {
+            grid-column: 2;
+        }
+
+        aside, article {
+            border: 3px solid red;
+            border-radius: 0.5em;
+            padding: 0.5em;
+        }
+
+        article {
+            height: 400px;
+        }
+
+        footer {
+            justify-self: center;
+            grid-row-start: 3;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="#" width="100" height="100">
+    <h1>The Lab</h1>
+    <h2>Experimental Sci-Fi Humor</h2>
+
+</header>
+
+<section class="sidebar">
+<aside>
+    <h3>Exposition</h3>
+    <ul>
+        <li>About Me</li>
+    </ul>
+</aside>
+<aside>
+    <h3>Rejection Count</h3>
+    <span class="mega">2</span>
+</aside>
+</section>
+
+<main>
+    <article>article 1</article>
+    <article>article 2</article>
+    <article>article 3</article>
+</main>
+
+<footer>footer</footer>
+
+</body>
+</html>
