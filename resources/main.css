@@ -192,3 +192,13 @@ div.blurb {
     border-radius: 0.5rem;
     background-color: #f0f0f0;
 }
+
+.bottom-signup {
+    padding: 1.0rem;
+    border:3px solid red;
+    border-radius: 1rem;
+    background-color: var(--yellow);
+}
+.bottom-signup h3 {
+    margin-top: 0;
+}
