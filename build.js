@@ -87,7 +87,9 @@ async function applyTemplate(tree, template, post) {
     let footer = await parseHTMLFragment(FOOTER_TEMPLATE)
 
     let post_body = null
+    let post_title = null
     visit(tree,(node)=>{
+        if(node.tagName === 'title')  post_title = node
         if(node.tagName === 'body') {
             post_body = node
         }
@@ -119,6 +121,10 @@ async function applyTemplate(tree, template, post) {
         if(node.tagName === 'article') {
             node.children.push(H1(Text(post.meta.title)))
             node.children.push(...post_body.children)
+        }
+        if(node.tagName === 'title') {
+            node.children.length = 0
+            node.children.push(...post_title.children)
         }
     })
 
