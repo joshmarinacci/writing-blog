@@ -161,7 +161,7 @@ async function writeTree(tree,output) {
 }
 
 async function processBlogPost(fullfile) {
-    // console.log("processing",fullfile)
+    console.log("processing",fullfile)
     const output = await calculateOutputPath(fullfile)
     // console.log("output file",output.outpath)
     output.template = await parseHTMLFile(POST_TEMPLATE)
