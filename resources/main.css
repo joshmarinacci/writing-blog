@@ -202,3 +202,8 @@ div.blurb {
 .bottom-signup h3 {
     margin-top: 0;
 }
+
+pre.poetry {
+    font-family: inherit;
+    margin-bottom: 5em;
+}
